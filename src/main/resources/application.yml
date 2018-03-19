@@ -4,5 +4,10 @@ spring:
   datasource:
     username: root
     password: 123456
-    url: mysql://localhost:3306/lzx2005
+    url: jdbc:mysql://localhost:3306/lzx2005
     driver-class-name: com.mysql.jdbc.Driver
+mybatis:
+  mapper-locations: [
+    "classpath*:/mapper/*.xml"
+  ]
+
