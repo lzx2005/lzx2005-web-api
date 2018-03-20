@@ -27,6 +27,13 @@ public class GithubController {
     private String to = "4484de3309ae42dc1f50",ken = "88201d2c53f10c0c1279";
     private BasicHeader authorization = new BasicHeader("Authorization", "bearer " + to + ken);
 
+    @GetMapping("/user")
+    public ControllerResult user(@RequestParam String username) throws IOException {
+        String url = "https://api.github.com/users/"+username;
+        String s = get(url);
+        return ControllerResult.ok(JSONObject.parseObject(s));
+    }
+
     @GetMapping("/info")
     public ControllerResult info(@RequestParam String username,@RequestParam(required = false,defaultValue = "1") int page) throws IOException {
         String s = get("https://api.github.com/users/" + username + "/repos?sort=updated&type=owner&page=" + page + "&per_page=10");
