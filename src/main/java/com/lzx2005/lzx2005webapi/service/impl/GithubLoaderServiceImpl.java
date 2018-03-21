@@ -37,16 +37,25 @@ public class GithubLoaderServiceImpl implements GithubLoaderService{
     @Async
     public void startLoadUserInfo(String username) {
         BoundHashOperations userInfo = redisTemplate.boundHashOps(RedisKey.USER_INFO);
+        userInfo.put(username,"loading");
         String url = "https://api.github.com/users/"+username;
         logger.info("开始获取用户{}信息：{}",username,url);
         String s = null;
         try {
+
+            try {
+                Thread.sleep(1000*5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             s = get(url);
         } catch (IOException e) {
             logger.error("获取用户信息出错",e);
         }
         if(!StringUtils.isEmpty(s)){
             userInfo.put(username,s);
+        }else{
+            userInfo.put(username,"failed");
         }
     }
 
