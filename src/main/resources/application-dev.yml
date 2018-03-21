@@ -6,6 +6,10 @@ spring:
     password: 123456
     url: jdbc:mysql://localhost:3306/lzx2005
     driver-class-name: com.mysql.jdbc.Driver
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
 mybatis:
   mapper-locations: [
     "classpath*:/mapper/*.xml"
