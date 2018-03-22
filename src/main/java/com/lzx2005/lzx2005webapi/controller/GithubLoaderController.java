@@ -44,41 +44,10 @@ public class GithubLoaderController {
 //        return ControllerResult.ok(JSONArray.parseArray(s));
 //    }
 //
-//    @GetMapping("/languages")
-//    public ControllerResult languages(@RequestParam String username) throws IOException {
-//        boolean hasNext = true;
-//        int page = 1;
-//        JSONObject languageObject = new JSONObject();
-//        while (hasNext){
-//            ControllerResult info = this.info(username,page);
-//            if (info != null) {
-//                JSONArray data = (JSONArray) info.getData();
-//                if(data.size()==0){
-//                    hasNext=false;
-//                }
-//                for (int i = 0; i < data.size(); i++) {
-//                    JSONObject jsonObject = data.getJSONObject(i);
-//                    Boolean fork = jsonObject.getBoolean("fork");
-//                    if(!fork){
-//                        String languagesUrl = jsonObject.getString("languages_url");
-//                        String s = get(languagesUrl);
-//                        JSONObject lang = JSONObject.parseObject(s);
-//                        for(String key :lang.keySet()){
-//                            Integer integer = languageObject.getInteger(key);
-//                            if(integer!=null){
-//                                integer+=lang.getInteger(key);
-//                                languageObject.put(key,integer);
-//                            }else{
-//                                languageObject.put(key,lang.getInteger(key));
-//                            }
-//                        }
-//                    }
-//                }
-//                page++;
-//            }
-//        }
-//
-//        return ControllerResult.ok(languageObject);
-//    }
+    @GetMapping("/language")
+    public ControllerResult language(@RequestParam String username) throws IOException {
+        githubLoaderService.startLoadLanguages(username);
+        return ControllerResult.ok(null).setMsg("开始从Github读取用户"+username+"的Language信息数据");
+    }
 
 }

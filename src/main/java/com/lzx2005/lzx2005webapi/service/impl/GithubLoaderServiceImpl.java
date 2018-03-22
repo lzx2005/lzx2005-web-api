@@ -1,5 +1,7 @@
 package com.lzx2005.lzx2005webapi.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.lzx2005.lzx2005webapi.constant.RedisKey;
 import com.lzx2005.lzx2005webapi.service.GithubLoaderService;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -42,12 +44,6 @@ public class GithubLoaderServiceImpl implements GithubLoaderService{
         logger.info("开始获取用户{}信息：{}",username,url);
         String s = null;
         try {
-
-            try {
-                Thread.sleep(1000*5);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             s = get(url);
         } catch (IOException e) {
             logger.error("获取用户信息出错",e);
@@ -62,13 +58,58 @@ public class GithubLoaderServiceImpl implements GithubLoaderService{
     @Override
     @Async
     public void startLoadReposInfo(String username) {
-
     }
 
     @Override
     @Async
     public void startLoadLanguages(String username) {
+        BoundHashOperations userLanguages = redisTemplate.boundHashOps(RedisKey.USER_LANGUAGES);
+        userLanguages.put(username,"loading");
+        boolean hasNext = true;
+        int page = 1;
+        JSONObject languageObject = new JSONObject();
+        try {
+            while (hasNext){
+                JSONArray jsonArray = getReposByPage(username,page);
+                if (jsonArray.size()>0) {
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        Boolean fork = jsonObject.getBoolean("fork");
+                        if(!fork){
+                            String languagesUrl = jsonObject.getString("languages_url");
+                            String s = get(languagesUrl);
+                            JSONObject lang = JSONObject.parseObject(s);
+                            for(String key :lang.keySet()){
+                                Integer integer = languageObject.getInteger(key);
+                                if(integer!=null){
+                                    integer+=lang.getInteger(key);
+                                    languageObject.put(key,integer);
+                                }else{
+                                    languageObject.put(key,lang.getInteger(key));
+                                }
+                            }
+                        }
+                    }
+                    page++;
+                }else{
+                    hasNext = false;
+                }
+            }
+            userLanguages.put(username,languageObject.toJSONString());
+        }catch (Exception e){
+            logger.error("渲染出错",e);
+            userLanguages.put(username,"failed");
+        }
 
+    }
+
+    private JSONArray getReposByPage(String username, int page) throws IOException {
+        String s = get("https://api.github.com/users/" + username + "/repos?sort=updated&type=owner&page=" + page + "&per_page=30");
+        if(!StringUtils.isEmpty(s)){
+            return JSONArray.parseArray(s);
+        }else{
+            return new JSONArray();
+        }
     }
 
     private String get(String url) throws IOException {

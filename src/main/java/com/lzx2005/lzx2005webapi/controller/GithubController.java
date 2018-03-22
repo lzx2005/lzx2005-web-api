@@ -29,14 +29,25 @@ public class GithubController {
     public ControllerResult user(@RequestParam String username) {
         BoundHashOperations boundHashOperations = redisTemplate.boundHashOps(RedisKey.USER_INFO);
         String value = (String) boundHashOperations.get(username);
-        if(value==null){
+        return getResult(value);
+    }
+
+    @GetMapping("/language")
+    public ControllerResult language(@RequestParam String username) {
+        BoundHashOperations boundHashOperations = redisTemplate.boundHashOps(RedisKey.USER_LANGUAGES);
+        String value = (String) boundHashOperations.get(username);
+        return getResult(value);
+    }
+
+    private ControllerResult getResult(String redisValue) {
+        if (redisValue == null) {
             return ControllerResult.ok(null).setCode(10001).setMsg("没有找到该用户的信息，请先从github中获取");
-        }else if(value.equals("loading")) {
+        } else if (redisValue.equals("loading")) {
             return ControllerResult.ok(null).setCode(10002).setMsg("正在从github中获取信息，请稍后...");
-        }else if(value.equals("failed")){
+        } else if (redisValue.equals("failed")) {
             return ControllerResult.ok(null).setCode(10003).setMsg("从github中获取信息失败，请尝试重新获取");
-        }else{
-            return ControllerResult.ok(JSONObject.parseObject(value));
+        } else {
+            return ControllerResult.ok(JSONObject.parseObject(redisValue));
         }
     }
 }
