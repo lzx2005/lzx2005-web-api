@@ -1,5 +1,6 @@
 package com.lzx2005.lzx2005webapi.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.lzx2005.lzx2005webapi.constant.RedisKey;
 import com.lzx2005.lzx2005webapi.dto.ControllerResult;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * Created by Lizhengxian on 2018/3/21.
@@ -36,7 +39,19 @@ public class GithubController {
     public ControllerResult language(@RequestParam String username) {
         BoundHashOperations boundHashOperations = redisTemplate.boundHashOps(RedisKey.USER_LANGUAGES);
         String value = (String) boundHashOperations.get(username);
-        return getResult(value);
+        ControllerResult result = getResult(value);
+        if(result.getCode()==200){
+            JSONObject data = (JSONObject) result.getData();
+            JSONArray jsonArray = new JSONArray();
+            for(Map.Entry<String,Object> entry : data.entrySet()){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("name",entry.getKey());
+                jsonObject.put("value",entry.getValue());
+                jsonArray.add(jsonObject);
+            }
+            result.setData(jsonArray);
+        }
+        return result;
     }
 
     private ControllerResult getResult(String redisValue) {
