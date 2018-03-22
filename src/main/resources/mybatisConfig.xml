@@ -3,24 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-    <!--<environments default="development">-->
-        <!--<environment id="development">-->
-            <!--<transactionManager type="JDBC"/>-->
-            <!--<dataSource type="POOLED">-->
-                <!--<property name="driver" value="${driver}"/>-->
-                <!--<property name="url" value="${url}"/>-->
-                <!--<property name="username" value="${username}"/>-->
-                <!--<property name="password" value="${password}"/>-->
-            <!--</dataSource>-->
-        <!--</environment>-->
-    <!--</environments>--><!--
+    <!--
     plugins在配置文件中的位置必须符合要求，否则会报错，顺序如下:
     properties?, settings?,
     typeAliases?, typeHandlers?,
     objectFactory?,objectWrapperFactory?,
     plugins?,
     environments?, databaseIdProvider?, mappers?
--->
+    -->
     <plugins>
         <!-- com.github.pagehelper为PageHelper类所在包名 -->
         <plugin interceptor="com.github.pagehelper.PageInterceptor">
@@ -28,6 +18,17 @@
             <property name="param1" value="value1"/>
         </plugin>
     </plugins>
+    <!--<environments default="development">-->
+        <!--<environment id="development">-->
+            <!--<transactionManager type="JDBC"/>-->
+            <!--<dataSource type="POOLED">-->
+                <!--<property name="driver" value="${spring.datasource.driver}"/>-->
+                <!--<property name="url" value="${spring.datasource.url}"/>-->
+                <!--<property name="username" value="${spring.datasource.username}"/>-->
+                <!--<property name="password" value="${spring.datasource.password}"/>-->
+            <!--</dataSource>-->
+        <!--</environment>-->
+    <!--</environments>-->
     <mappers>
         <mapper resource="com/lzx2005/lzx2005webapi/dao/BlogMapper.xml"/>
     </mappers>
