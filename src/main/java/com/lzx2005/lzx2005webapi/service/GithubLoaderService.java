@@ -10,4 +10,6 @@ public interface GithubLoaderService {
     void startLoadUserInfo(String username);
     void startLoadReposInfo(String username);
     void startLoadLanguages(String username) throws IOException;
+
+    void startLoadCalendar(String username);
 }

@@ -50,4 +50,10 @@ public class GithubLoaderController {
         return ControllerResult.ok(null).setMsg("开始从Github读取用户"+username+"的Language信息数据");
     }
 
+    @GetMapping("/calender")
+    public ControllerResult calender(@RequestParam String username) {
+        githubLoaderService.startLoadCalendar(username);
+        return ControllerResult.ok(null).setMsg("开始从Github读取用户"+username+"的日提交信息数据");
+    }
+
 }

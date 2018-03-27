@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.lzx2005.lzx2005webapi.constant.RedisKey;
 import com.lzx2005.lzx2005webapi.dto.ControllerResult;
+import com.lzx2005.lzx2005webapi.service.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -27,6 +29,9 @@ public class GithubController {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private HttpService httpService;
 
     @GetMapping("/user")
     public ControllerResult user(@RequestParam String username) {
@@ -43,15 +48,33 @@ public class GithubController {
         if(result.getCode()==200){
             JSONObject data = (JSONObject) result.getData();
             JSONArray jsonArray = new JSONArray();
-            for(Map.Entry<String,Object> entry : data.entrySet()){
+            for(Map.Entry<String,Object> entry : data.getJSONObject("data").entrySet()){
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("name",entry.getKey());
                 jsonObject.put("value",entry.getValue());
                 jsonArray.add(jsonObject);
             }
-            result.setData(jsonArray);
+            data.put("data", jsonArray);
+            result.setData(data);
         }
         return result;
+    }
+
+
+
+    @GetMapping("/calender")
+    public ControllerResult calender(@RequestParam String username) {
+        BoundHashOperations boundHashOperations = redisTemplate.boundHashOps(RedisKey.USER_CALENDAR);
+        String value = (String) boundHashOperations.get(username);
+        return getResult(value);
+    }
+
+    @GetMapping("/repos")
+    public ControllerResult repos(@RequestParam String username,
+                                  @RequestParam(defaultValue = "1",required = false) int page,
+                                  @RequestParam(defaultValue = "10",required = false)int pageSize) throws IOException {
+        JSONArray reposByPage = httpService.getReposByPage(username, page, pageSize);
+        return ControllerResult.ok(reposByPage);
     }
 
     private ControllerResult getResult(String redisValue) {

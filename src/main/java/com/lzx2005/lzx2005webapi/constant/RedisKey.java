@@ -8,4 +8,5 @@ public class RedisKey {
     public static final String USER_INFO = "USER_INFO";
     public static final String USER_REPOS = "USER_REPOS";
     public static final String USER_LANGUAGES = "USER_LANGUAGES";
+    public static final String USER_CALENDAR = "USER_CALENDAR";
 }
