@@ -9,4 +9,8 @@ public class RedisKey {
     public static final String USER_REPOS = "USER_REPOS";
     public static final String USER_LANGUAGES = "USER_LANGUAGES";
     public static final String USER_CALENDAR = "USER_CALENDAR";
+
+    public static final String STEAM_TRENGIND = "STEAM_TRENGIND";
+    public static final String STEAM_RECENT = "STEAM_RECENT";
+    public static final String STEAM_TOP = "STEAM_TOP";
 }

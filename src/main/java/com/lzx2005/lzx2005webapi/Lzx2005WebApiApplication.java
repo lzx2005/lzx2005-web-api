@@ -1,8 +1,11 @@
 package com.lzx2005.lzx2005webapi;
 
+import com.lzx2005.lzx2005webapi.service.SteamSpyService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -20,8 +23,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 @ComponentScan("com.lzx2005")
 @EnableAsync
 @Configuration
-public class Lzx2005WebApiApplication {
+public class Lzx2005WebApiApplication implements CommandLineRunner{
 	private static final Logger logger = LoggerFactory.getLogger(Lzx2005WebApiApplication.class);
+
+	@Autowired
+	private SteamSpyService steamSpyService;
 
 	/**
 	 * 自定义异步线程池
@@ -47,5 +53,10 @@ public class Lzx2005WebApiApplication {
 	}
 	public static void main(String[] args) {
 		SpringApplication.run(Lzx2005WebApiApplication.class, args);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		//steamSpyService.readIndex();
 	}
 }
