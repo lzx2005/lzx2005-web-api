@@ -12,6 +12,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,12 @@ public class SteamSpyServiceImpl implements SteamSpyService {
                         Elements tds = trs.get(i).getElementsByTag("td");
                         if (tds.size() > 5) {
                             String id = tds.get(0).text();
+                            Elements imgs = tds.get(1).getElementsByTag("img");
+                            if(imgs.size()>0){
+                                Element element = imgs.get(0);
+                                String src = element.attr("src");
+                                jsonObject.put("img",src);
+                            }
                             String name = tds.get(1).text();
                             String releaseDate = tds.get(2).text();
                             String price = tds.get(3).text();
@@ -84,6 +91,12 @@ public class SteamSpyServiceImpl implements SteamSpyService {
                         Elements tds = trs1.get(i).getElementsByTag("td");
                         if (tds.size() > 6) {
                             String id = tds.get(0).text();
+                            Elements imgs = tds.get(1).getElementsByTag("img");
+                            if(imgs.size()>0){
+                                Element element = imgs.get(0);
+                                String src = element.attr("src");
+                                jsonObject.put("img",src);
+                            }
                             String name = tds.get(1).text();
                             String releaseDate = tds.get(2).text();
                             String price = tds.get(3).text();
@@ -112,6 +125,12 @@ public class SteamSpyServiceImpl implements SteamSpyService {
                         Elements tds = trs2.get(i).getElementsByTag("td");
                         if (tds.size() > 7) {
                             String id = tds.get(0).text();
+                            Elements imgs = tds.get(1).getElementsByTag("img");
+                            if(imgs.size()>0){
+                                Element element = imgs.get(0);
+                                String src = element.attr("src");
+                                jsonObject.put("img",src);
+                            }
                             String name = tds.get(1).text();
                             String releaseDate = tds.get(2).text();
                             String price = tds.get(3).text();
